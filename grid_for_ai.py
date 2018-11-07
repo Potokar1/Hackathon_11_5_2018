@@ -1,13 +1,15 @@
 # Used to get a random position for the apple and the snake head start.
 import random
-#random.seed(100)
+# random.seed(100)
 from queue import Queue
 from snake_node import Snake_Node
 
 # The Grid object to create and manipulate the grid being played on.
+
+
 class Grid():
     # initialize the Grid, Default height and length 20x20
-    def __init__(self,height=20,length=20):
+    def __init__(self, height=20, length=20):
         self.height = height
         self.length = length
         self.grid = []
@@ -22,7 +24,6 @@ class Grid():
         self.create_grid()
         self.snake_head_start_location()
         self.spawn_food()
-
 
     # Set every node in the grid to zero
     def reset_grid(self):
@@ -42,7 +43,7 @@ class Grid():
     # 1 for snake head
     # 2 for snake body
     # 3 for food
-    def update_grid(self,row,col,value):
+    def update_grid(self, row, col, value):
         self.grid[row][col] = value
 
     # This spawns food at a random location on the map not occupeied by other things
@@ -63,7 +64,7 @@ class Grid():
         self.update_grid(start_row, start_col, 1)
 
     # The tail moves, It sheds its old tail end and has a new tail start
-    def update_tail(self,head):
+    def update_tail(self, head):
         self.tail.enqueue(head)
         self.update_grid(head.row, head.col, 2)
         # Snakes shed skin so this is the tail that it 'shed' as it moved
@@ -71,7 +72,7 @@ class Grid():
         self.update_grid(shed.row, shed.col, 0)
 
     # The tail grows, It doesnt shed its old tail end and has a new tail start
-    def grow(self,head):
+    def grow(self, head):
         self.tail.enqueue(head)
         self.update_grid(head.row, head.col, 2)
 
@@ -84,13 +85,13 @@ class Grid():
         self.update_tail(self.temp_head)
 
     # Move the head to a new position (the rest of the snake will follow)
-    def move_head(self,row_move,col_move):
+    def move_head(self, row_move, col_move):
         new_node = Snake_Node(self.head.row + row_move, self.head.col + col_move)
         self.head = new_node
         self.update_grid(new_node.row, new_node.col, 1)
 
     # This will move the snake. Only one move per 'turn', either row or col move, not both.
-    def snake_move(self,row_move,col_move):
+    def snake_move(self, row_move, col_move):
         # Checks to see if a move is legal, An illegal move does result in death!
         if self.snake_check_move(row_move, col_move):
             # Move is good, just moving through the grid
@@ -103,7 +104,6 @@ class Grid():
             # Move is impossible, There is an error
             elif self.grid[self.head.row + row_move][self.head.col + col_move] == 1:
                 self.grew = False
-                print("ERROR ERROR This can not possibly happen ERROR ERROR")
 
             # Move ends in death, Head hit the body
             elif self.grid[self.head.row + row_move][self.head.col + col_move] == 2:
@@ -125,7 +125,7 @@ class Grid():
 
     # Check to see if a move with cross the boundry. If bad move then DEAD
     # Returns true if legal move, Returns false if illegal move
-    def snake_check_move(self,row_move,col_move):
+    def snake_check_move(self, row_move, col_move):
         legal = True
         # Top Row
         if self.head.row == 0:
@@ -172,9 +172,8 @@ class Grid():
             if col_move == 1:
                 legal = False
 
-
         # If not_if_hitting_body returns false, then the snake WILL die , so it is not a legal move.
-        if legal and not self.not_if_hitting_body(row_move,col_move):
+        if legal and not self.not_if_hitting_body(row_move, col_move):
             legal = False
 
         return legal
@@ -184,7 +183,7 @@ class Grid():
         self.isdead = True
 
     # This will return False if next move WILL hit self, and True if it WILL NOT
-    def not_if_hitting_body(self,row_move,col_move):
+    def not_if_hitting_body(self, row_move, col_move):
         if self.grid[self.head.row + row_move][self.head.col + col_move] == 2:
             return False
         else:
