@@ -5,8 +5,8 @@ import turtle
 import time
 import random
 
-grid_rows = 30
-grid_cols = 30
+grid_rows = 10
+grid_cols = 10
 
 # Create Grid, Initialize Snake head, Spawn Food
 g = Grid(grid_rows, grid_cols)
@@ -28,7 +28,7 @@ class Gui():
         self.score = 0
         self.high_score = 0
         # Delay Timer so we don't go so fast!
-        self.delay_start = 0
+        self.delay_start = 0.5
         # This is the seconds the game waits after death
         self.pause_delay = self.delay_start * 5
         self.delay = self.delay_start
@@ -117,7 +117,7 @@ class Gui():
 
     # Move the snake, and at any point if snake dead, break
     def move_snake(self):
-        self.random_direction()
+        self.smart_direction()
         self.recursive_count = 0
         row_move = self.head.xdirection
         col_move = self.head.ydirection
@@ -157,6 +157,7 @@ class Gui():
     # This is what happens when a snake dies.
     def die(self):
         self.score += self.died_score_change
+        self.recursive_count = 0
         self.grid.__init__(self.grid_rows, self.grid_cols)
         time.sleep(self.pause_delay)
         x, y = self.convert_grid_to_coord(self.grid.head)
@@ -177,7 +178,7 @@ class Gui():
             # Try Again
             self.head.xdirection = 0
             self.head.ydirection = 0
-            self.random_direction()
+            self.smart_direction()
         else:
             self.head.xdirection = -1
             self.head.ydirection = 0
@@ -190,7 +191,7 @@ class Gui():
             # Try Again
             self.head.xdirection = 0
             self.head.ydirection = 0
-            self.random_direction()
+            self.smart_direction()
         else:
             self.head.xdirection = 1
             self.head.ydirection = 0
@@ -203,7 +204,7 @@ class Gui():
             # Try Again
             self.head.xdirection = 0
             self.head.ydirection = 0
-            self.random_direction()
+            self.smart_direction()
         else:
             self.head.xdirection = 0
             self.head.ydirection = -1
@@ -216,7 +217,7 @@ class Gui():
             # Try Again
             self.head.xdirection = 0
             self.head.ydirection = 0
-            self.random_direction()
+            self.smart_direction()
         else:
             self.head.xdirection = 0
             self.head.ydirection = 1
@@ -226,6 +227,83 @@ class Gui():
         self.grid.spawn_food()
         x, y = self.convert_grid_to_coord(self.grid.food_location)
         self.food.goto(x, y)
+
+    def choose_smart(self):
+        snake_x, snake_y = self.grid.head.get_node()
+        food_x, food_y = self.grid.food_location.get_node()
+        if snake_x < food_x:
+            self.go_down()
+        elif snake_x > food_x:
+            self.go_up()
+        else:
+            if snake_y < food_y:
+                self.go_right()
+            elif snake_y > food_y:
+                self.go_left()
+
+
+    # Returns True if we are surrounded by the tail,
+    # Retrns False if there is a way out.
+    # When Returned with False, Then current x/y direction will be safe
+    def surrounded(self):   # THIS PART IS BUGGY!
+        snake_x, snake_y = self.grid.head.get_node()
+        is_left = False
+        is_right = False
+        is_up = False
+        is_down = False
+        for node in self.grid.tail.get_queue():
+            node_x, node_y = node.get_node()
+            # Tail is below of head
+            if snake_y == node_y and snake_x < node_x or snake_x == self.grid_rows - 1:
+                print('there is a tail down at {}'.format(node.get_node()))
+                is_down = True
+            if snake_y == node_y and snake_x > node_x or snake_x == 0:
+                print('there is a tail up at {}'.format(node.get_node()))
+                is_up = True
+            if snake_x == node_x and snake_y < node_y or snake_y == self.grid_cols - 1:
+                print('there is a tail right at {}'.format(node.get_node()))
+                is_right = True
+            if snake_x == node_x and snake_y > node_y or snake_y == 0:
+                print('there is a tail left at {}'.format(node.get_node()))
+                is_left = True
+            # Return true if we are surrounded
+            if is_up and is_down and is_left and is_right:
+                return True
+        if not is_left:
+            print('we chose left')
+            self.go_left()
+        elif not is_up:
+            print('we chose up')
+            self.go_up()
+        elif not is_right:
+            print('we chose right')
+            self.go_right()
+        elif not is_down:
+            print('we chose down')
+            self.go_down()
+        # Return false if we are not surrounded
+        return False
+
+    def smart_direction(self):
+        self.recursive_count += 1
+        self.choose_smart()
+        row_move = self.head.xdirection
+        col_move = self.head.ydirection
+        while not self.grid.snake_check_move(row_move, col_move):
+            print('stuck here')
+            if self.surrounded():
+                rand_direction = random.randint(0, 3)
+                if rand_direction == 0:
+                    self.go_up()
+                elif rand_direction == 1:
+                    self.go_down()
+                elif rand_direction == 2:
+                    self.go_left()
+                elif rand_direction == 3:
+                    self.go_right()
+            row_move = self.head.xdirection
+            col_move = self.head.ydirection
+            print('try {},{}'.format(self.head.xdirection,self.head.ydirection))
 
     def random_direction(self):
         rand_direction = random.randint(0, 3)
@@ -270,6 +348,7 @@ for _ in range(gui.frames):
     gui.score += 1
     gui.update_score_disp()
     gui.window.update()
+    gui.print_grid()
     # move the snake through the grid.
     gui.move_snake()
 
