@@ -127,6 +127,9 @@ class Grid():
     # Returns true if legal move, Returns false if illegal move
     def snake_check_move(self, row_move, col_move):
         legal = True
+        if row_move == 0 and col_move == 0:
+            legal = False
+            return legal
         # Top Row
         if self.head.row == 0:
 
