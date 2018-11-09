@@ -129,7 +129,7 @@ class Grid():
         legal = True
         if row_move == 0 and col_move == 0:
             legal = False
-            print("From Grid: don't stay still")
+            #print("From Grid: don't stay still")
             return legal
         # Top Row
         if self.head.row == 0:
@@ -137,19 +137,19 @@ class Grid():
             # Top Left Corner (No Moving left or up)
             if self.head.col == 0:
                 if row_move == -1 or col_move == -1:
-                    print("From Grid: don't cross top left")
+                    #print("From Grid: don't cross top left")
                     legal = False
 
             # Top Right Corner (No Moving Right or Up)
             elif self.head.col == self.length - 1:
                 if row_move == -1 or col_move == 1:
-                    print("From Grid: don't cross top right")
+                    #print("From Grid: don't cross top right")
                     legal = False
 
             # Top Row - no Corners (No Moving Up)
             else:
                 if row_move == -1:
-                    print("From Grid: don't cross top")
+                    #print("From Grid: don't cross top")
                     legal = False
 
         # Bottom Row
@@ -158,35 +158,35 @@ class Grid():
             # Bottom left corner (No moving down or left)
             if self.head.col == 0:
                 if row_move == 1 or col_move == -1:
-                    print("From Grid: don't cross bottom left")
+                    #print("From Grid: don't cross bottom left")
                     legal = False
             # Bottom Right Corner (No movin Down or Right)
             elif self.head.col == self.length - 1:
                 if row_move == 1 or col_move == 1:
-                    print("From Grid: don't cross bottom right")
+                    #print("From Grid: don't cross bottom right")
                     legal = False
 
             # Bottom Row - No Corners (No moving down)
             else:
                 if row_move == 1:
-                    print("From Grid: don't cross bottom")
+                    #print("From Grid: don't cross bottom")
                     legal = False
 
         # Very Left - No corners (No moving left)
         elif self.head.col == 0:
             if col_move == -1:
-                print("From Grid: don't cross left")
+                #print("From Grid: don't cross left")
                 legal = False
 
         # Very Right - No Corners (No moving Right)
         elif self.head.col == self.length - 1:
             if col_move == 1:
-                print("From Grid: don't cross right")
+                #print("From Grid: don't cross right")
                 legal = False
 
         # If not_if_hitting_body returns false, then the snake WILL die , so it is not a legal move.
         if legal and not self.not_if_hitting_body(row_move, col_move):
-            print("From Grid: don't hit body")
+            #print("From Grid: don't hit body")
             legal = False
 
         return legal

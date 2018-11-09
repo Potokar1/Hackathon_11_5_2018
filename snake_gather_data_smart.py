@@ -123,31 +123,141 @@ class Data():
         # Move the food to random spot
         self.grid.spawn_food()
 
-    def smart_direction(self):
-        self.recursive_count += 1
+    # Bool Array Is for up, down, left, right, if this is a legal move!
+    def choose_smart(self, worked):
         snake_x, snake_y = self.grid.head.get_node()
         food_x, food_y = self.grid.food_location.get_node()
-        if snake_x < food_x:
+
+        if snake_x < food_x and worked[0] and not self.put_in_box(1):
             self.go_down()
-        elif snake_x > food_x:
+        elif snake_x > food_x and worked[1] and not self.put_in_box(0):
             self.go_up()
         else:
-            if snake_y < food_y:
+            if snake_y < food_y and worked[3] and not self.put_in_box(3):
                 self.go_right()
-            elif snake_y > food_y:
+            elif snake_y > food_y and worked[2] and not self.put_in_box(2):
                 self.go_left()
+
+    # Direction is up = 0, down = 1, left = 2, right = 3. We want to determine if that will put us in a box
+    # Returns true if it will put in box and false if not in box
+    def put_in_box(self, direction):
+        snake_x, snake_y = self.grid.head.get_node()
+        is_left = False
+        is_right = False
+        is_up = False
+        is_down = False
+        # Go Through all the tails and see if we will box ourself in with the border and our tail.
+        for node in self.grid.tail.get_queue():
+            node_x, node_y = node.get_node()
+            # Tail is below the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_down and (snake_y == node_y and snake_x < node_x or snake_x == self.grid_rows - 1):
+                is_down = True
+            # Tail is above the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_up and (snake_y == node_y and snake_x > node_x or snake_x == 0):
+                is_up = True
+            # Tail is right of the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_right and (snake_x == node_x and snake_y < node_y or snake_y == self.grid_cols - 1):
+                is_right = True
+            # Tail is left of the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_left and (snake_x == node_x and snake_y > node_y or snake_y == 0):
+                is_left = True
+            # Return true if we are surrounded
+            if is_up and is_down and is_left and is_right:
+                return True
+        # if we care about Up
+        if direction == 0 and is_up and is_left and is_right:
+            return True
+        # if we care about Down
+        elif direction == 1 and is_down and is_left and is_right:
+            return True
+        # if we care about Left
+        elif direction == 2 and is_up and is_down and is_left:
+            return True
+        # if we care about Right
+        elif direction == 3 and is_up and is_down and is_right:
+            return True
+        else:
+            return False
+
+    # Bool Array Is for down, up, right, left, if this is a legal move! (now y before x)
+    def choose_smart_backward(self, worked):
+        snake_x, snake_y = self.grid.head.get_node()
+        food_x, food_y = self.grid.food_location.get_node()
+
+        if snake_y < food_y and worked[2]:
+            self.go_right()
+        elif snake_y > food_y and worked[3]:
+            self.go_left()
+        else:
+            if snake_x < food_x and worked[0]:
+                self.go_down()
+            elif snake_x > food_x and worked[1]:
+                self.go_up()
+
+    # Returns True if we are surrounded by the tail,
+    # Retrns False if there is a way out.
+    # When Returned with False, Then current x/y direction will be safe
+    def surrounded(self):   # THIS PART IS BUGGY!
+        snake_x, snake_y = self.grid.head.get_node()
+        is_left = False
+        is_right = False
+        is_up = False
+        is_down = False
+        for node in self.grid.tail.get_queue():
+            node_x, node_y = node.get_node()
+            # Tail is below the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_down and (snake_y == node_y and snake_x < node_x or snake_x == self.grid_rows - 1):
+                is_down = True
+            # Tail is above the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_up and (snake_y == node_y and snake_x > node_x or snake_x == 0):
+                is_up = True
+            # Tail is right of the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_right and (snake_x == node_x and snake_y < node_y or snake_y == self.grid_cols - 1):
+                is_right = True
+            # Tail is left of the head and this is the first time that we learn this. Also we arn't at a border
+            if not is_left and (snake_x == node_x and snake_y > node_y or snake_y == 0):
+                is_left = True
+            # Return true if we are surrounded
+            if is_up and is_down and is_left and is_right:
+                return True
+        if not is_left:
+            self.go_left()
+        elif not is_up:
+            self.go_up()
+        elif not is_right:
+            self.go_right()
+        elif not is_down:
+            self.go_down()
+        # Return false if we are not surrounded
+        return False
+
+    def smart_direction(self, worked=[True, True, True, True]):
+        self.recursive_count += 1
+        if self.recursive_count <= 10:
+            self.choose_smart(worked)
         row_move = self.xdirection
         col_move = self.ydirection
         while not self.grid.snake_check_move(row_move, col_move):
-            rand_direction = random.randint(0, 3)
-            if rand_direction == 0:
-                self.go_up()
-            elif rand_direction == 1:
-                self.go_down()
-            elif rand_direction == 2:
-                self.go_left()
-            elif rand_direction == 3:
-                self.go_right()
+            if row_move == col_move and self.recursive_count >= 30:
+                self.die()
+            if self.surrounded():
+                self.recursive_count += 1
+                rand_direction = random.randint(0, 3)   # THIS IS THE LAST THING I NEED TO DO
+                # CHANGE HOW RANDOM DISISIONS ARE DONE WHEN NOTHING LOOKS LIKE A GOOD MOVE
+                # HINT: PROBABLY NEEDS TO GO TO THE SIDE WITH THE FURTHEST TAIL DISTANCE
+                # AKA DONT MOVE TO THE SIDE WITH THE TAIL THAT IS ONE BLOCK AWAY BUT THE ONE
+                # THAT IS A COUPLE SPACES AWAY. GIVES MORE BREATHEING ROOM
+                if rand_direction == 0:
+                    self.go_up()
+                elif rand_direction == 1:
+                    self.go_down()
+                elif rand_direction == 2:
+                    self.go_left()
+                elif rand_direction == 3:
+                    self.go_right()
+            row_move = self.xdirection
+            col_move = self.ydirection
+            # For redundancy purposes
             row_move = self.xdirection
             col_move = self.ydirection
 
@@ -269,11 +379,10 @@ class Data():
         compiled.append('!')
         return compiled
 
+
 # This is like the main routine.
 # Put data collection functions inside the for loop for data every frame.
 # Put data collection functions outside the for loop for data at the very end.
-
-
 def run(output_file):
     # row and col size of our board
     grid_rows = 5 * random.randint(1, 20)

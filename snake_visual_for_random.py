@@ -13,7 +13,7 @@ class Gui():
         self.height = grid_rows * 20
         self.grid_cols = grid_cols
         self.grid_rows = grid_rows
-        self.frames = 100000
+        self.frames = 10000
         self.got_food_score_change = -100
         self.died_score_change = 100000
         # Reference to the grid it came from
