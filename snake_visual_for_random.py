@@ -13,7 +13,7 @@ class Gui():
         self.height = grid_rows * 20
         self.grid_cols = grid_cols
         self.grid_rows = grid_rows
-        self.frames = 10000
+        self.frames = 100000
         self.got_food_score_change = -100
         self.died_score_change = 100000
         # Reference to the grid it came from
@@ -159,14 +159,14 @@ class Gui():
         x, y = self.convert_grid_to_coord(self.grid.food_location)
         self.food.goto(x, y)
         self.head.xdirection = 0
-        self.head.ydirection = 0
+        self.head.ydirection = 1
         self.hide_and_clear_segments()
         # self.reset_score_and_delay()
         self.update_score_disp()
 
     # Change the direction of the snake to up
     def go_up(self):
-        if self.recursive_count > 50:
+        if self.recursive_count >= 30:
             self.die()
         elif self.head.xdirection == 1:
             # Try Again
@@ -179,7 +179,7 @@ class Gui():
 
     # Change the direction of the snake to down
     def go_down(self):
-        if self.recursive_count > 50:
+        if self.recursive_count >= 30:
             self.die()
         elif self.head.xdirection == -1:
             # Try Again
@@ -192,7 +192,7 @@ class Gui():
 
     # Change the direction of the snake to left
     def go_left(self):
-        if self.recursive_count > 50:
+        if self.recursive_count >= 30:
             self.die()
         elif self.head.ydirection == 1:
             # Try Again
@@ -205,7 +205,7 @@ class Gui():
 
     # Change the direction of the snake to right
     def go_right(self):
-        if self.recursive_count > 50:
+        if self.recursive_count >= 30:
             self.die()
         elif self.head.ydirection == -1:
             # Try Again
@@ -351,6 +351,8 @@ class Gui():
         col_move = self.head.ydirection
         while not self.grid.snake_check_move(row_move, col_move):
             print('stuck here with {},{}'.format(self.head.xdirection, self.head.ydirection))
+            if row_move == col_move and self.recursive_count >= 30:
+                self.die()
             if self.surrounded():
                 print('increasing recursive count to {}'.format(self.recursive_count))
                 self.recursive_count += 1
@@ -412,8 +414,8 @@ class Gui():
         print()
 
 
-grid_rows = 30
-grid_cols = 30
+grid_rows = 20
+grid_cols = 20
 
 # Create Grid, Initialize Snake head, Spawn Food
 g = Grid(grid_rows, grid_cols)
@@ -430,6 +432,6 @@ for _ in range(gui.frames):
     gui.move_snake()
 
     # Pause the execution of the program so it doesn't go lightning fast
-    time.sleep(gui.delay)
+    # time.sleep(gui.delay)
 
 gui.window.mainloop()
