@@ -22,7 +22,7 @@ class Gui():
         self.score = 0
         self.high_score = 0
         # Delay Timer so we don't go so fast!
-        self.delay_start = 0
+        self.delay_start = 0.06
         # This is the seconds the game waits after death
         self.pause_delay = self.delay_start * 5
         self.delay = self.delay_start
@@ -111,7 +111,7 @@ class Gui():
 
     # Move the snake, and at any point if snake dead, break
     def move_snake(self):
-        self.smart_direction()
+        self.random_direction()
         self.recursive_count = 0
         row_move = self.head.xdirection
         col_move = self.head.ydirection
@@ -414,8 +414,8 @@ class Gui():
         print()
 
 
-grid_rows = 20
-grid_cols = 20
+grid_rows = 30
+grid_cols = 30
 
 # Create Grid, Initialize Snake head, Spawn Food
 g = Grid(grid_rows, grid_cols)

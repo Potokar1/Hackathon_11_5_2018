@@ -1,4 +1,4 @@
-from grid_for_ai import Grid
+from old_grid import Grid
 from queue import Queue
 import user_input as ui
 import turtle
