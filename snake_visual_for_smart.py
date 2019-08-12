@@ -5,6 +5,7 @@ import turtle
 import time
 import random
 
+# Counter factualt regret minimization
 
 class Gui():
     def __init__(self, grid_cols, grid_rows, grid):
@@ -232,7 +233,7 @@ class Gui():
         distance = self.food_distance()
         snake_x, snake_y = self.grid.head.get_node()
         food_x, food_y = self.grid.food_location.get_node()
-        print('distance = {}'.format(distance))
+        #print('distance = {}'.format(distance))
         if snake_x < food_x and (not snake_x >= self.grid.height - 2 or distance <= 2) and worked[1] and not self.put_in_box(1):
             #print('choose smart says: go down, worked[1]: {}, put_in_box(1): {}'.format(worked[1],self.put_in_box(1)))
             self.go_down()
@@ -307,19 +308,19 @@ class Gui():
                 return True
         # if we care about Up
         if direction == 0 and is_up and is_left and is_right:
-            print("thinks it shouldn't go up")
+            #print("thinks it shouldn't go up")
             return True
         # if we care about Down
         elif direction == 1 and is_down and is_left and is_right:
-            print("thinks it shouldn't go down")
+            #print("thinks it shouldn't go down")
             return True
         # if we care about Left
         elif direction == 2 and is_up and is_down and is_left:
-            print("thinks it shouldn't go left")
+            #print("thinks it shouldn't go left")
             return True
         # if we care about Right
         elif direction == 3 and is_up and is_down and is_right:
-            print("thinks it shouldn't go right")
+            #print("thinks it shouldn't go right")
             return True
         else:
             return False
@@ -352,35 +353,35 @@ class Gui():
             node_x, node_y = node.get_node()
             # Tail is below the head and this is the first time that we learn this. Also we arn't at a border
             if not is_down and (snake_y == node_y and (snake_x < node_x or snake_x == self.grid.height - 1)):
-                print('surrounded: there is a tail down at {}'.format(node.get_node()))
+                #print('surrounded: there is a tail down at {}'.format(node.get_node()))
                 is_down = True
             # Tail is above the head and this is the first time that we learn this. Also we arn't at a border
             if not is_up and (snake_y == node_y and (snake_x > node_x or snake_x == 0)):
-                print('surrounded: there is a tail up at {}'.format(node.get_node()))
+                #print('surrounded: there is a tail up at {}'.format(node.get_node()))
                 is_up = True
             # Tail is right of the head and this is the first time that we learn this. Also we arn't at a border
             if not is_right and (snake_x == node_x and (snake_y < node_y or snake_y == self.grid.length - 1)):
-                print('surrounded: there is a tail right at {}'.format(node.get_node()))
+                #print('surrounded: there is a tail right at {}'.format(node.get_node()))
                 is_right = True
             # Tail is left of the head and this is the first time that we learn this. Also we arn't at a border
             if not is_left and (snake_x == node_x and (snake_y > node_y or snake_y == 0)):
-                print('surrounded: there is a tail left at {}'.format(node.get_node()))
+                #print('surrounded: there is a tail left at {}'.format(node.get_node()))
                 is_left = True
             # Return true if we are surrounded
             if is_up and is_down and is_left and is_right:
                 return True
         if not is_left:
             self.go_left()
-            print('surrounded: we chose left. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
+            #print('surrounded: we chose left. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
         elif not is_up:
             self.go_up()
-            print('surrounded: we chose up. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
+            #print('surrounded: we chose up. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
         elif not is_right:
             self.go_right()
-            print('surrounded: we chose right. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
+            #print('surrounded: we chose right. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
         elif not is_down:
             self.go_down()
-            print('surrounded: we chose down. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
+            #print('surrounded: we chose down. {},{} as move'.format(self.head.xdirection, self.head.ydirection))
         # Return false if we are not surrounded
         return False
 
@@ -430,7 +431,7 @@ class Gui():
         # If there is not a tail to the left, then reward that path more.
         if snake_y - i < 0:
             i += 2
-        print('left = {}'.format(i))
+        #print('left = {}'.format(i))
         left = i
         # Check right Length
         i = 1
@@ -439,7 +440,7 @@ class Gui():
         # If there is not a tail to the right, then reward that path more.
         if snake_y + i > self.grid.length - 1:
             i += 2
-        print('right = {}'.format(i))
+        #print('right = {}'.format(i))
         right = i
         # Check up Length
         i = 1
@@ -448,7 +449,7 @@ class Gui():
         # If there is not a tail to the up, then reward that path more.
         if snake_x - i < 0:
             i += 2
-        print('up = {}'.format(i))
+        #print('up = {}'.format(i))
         up = i
         # Check down Length
         i = 1
@@ -463,26 +464,26 @@ class Gui():
         # If there is not a tail to the down, then reward that path more.
         if snake_x + i > self.grid.height - 1:
             i += 2
-        print('down = {}'.format(i))
+        #print('down = {}'.format(i))
         down = i
         # If left length is the largest
         if left >= right and left >= down and left >= up:
-            print('surrounded and left is direction with the tail the farthest from head')
+            #print('surrounded and left is direction with the tail the farthest from head')
             self.go_left()
             return
         # If right length is the largest
         if right >= left and right >= down and right >= up:
-            print('surrounded and right is direction with the tail the farthest from head')
+            #print('surrounded and right is direction with the tail the farthest from head')
             self.go_right()
             return
         # If up length is the largest
         if up >= right and up >= down and up >= left:
-            print('surrounded and up is direction with the tail the farthest from head')
+            #print('surrounded and up is direction with the tail the farthest from head')
             self.go_up()
             return
         # If down length is the largest
         if down >= right and down >= left and down >= up:
-            print('surrounded and down is direction with the tail the farthest from head')
+            #print('surrounded and down is direction with the tail the farthest from head')
             self.go_down()
             return
 
@@ -497,7 +498,7 @@ class Gui():
         # If there is not a tail to the left, then reward that path more.
         if snake_y - i < 0:
             i += 2
-        print('left = {}'.format(i))
+        #print('left = {}'.format(i))
         left = i
         # Check right Length
         i = 1
@@ -506,7 +507,7 @@ class Gui():
         # If there is not a tail to the right, then reward that path more.
         if snake_y + i > self.grid.length - 1:
             i += 2
-        print('right = {}'.format(i))
+        #print('right = {}'.format(i))
         right = i
         # Check up Length
         i = 1
@@ -515,7 +516,7 @@ class Gui():
         # If there is not a tail to the up, then reward that path more.
         if snake_x - i < 0:
             i += 2
-        print('up = {}'.format(i))
+        #print('up = {}'.format(i))
         up = i
         # Check down Length
         i = 1
@@ -530,26 +531,26 @@ class Gui():
         # If there is not a tail to the down, then reward that path more.
         if snake_x + i > self.grid.height - 1:
             i += 2
-        print('down = {}'.format(i))
+        #print('down = {}'.format(i))
         down = i
         # If left length is the largest
         if left >= right and left >= down and left >= up:
-            print('go_furthest_no_box and left is direction with the tail the farthest from head')
+            #print('go_furthest_no_box and left is direction with the tail the farthest from head')
             self.go_left()
             return
         # If right length is the largest
         if right >= left and right >= down and right >= up:
-            print('go_furthest_no_box and right is direction with the tail the farthest from head')
+            #print('go_furthest_no_box and right is direction with the tail the farthest from head')
             self.go_right()
             return
         # If up length is the largest
         if up >= right and up >= down and up >= left:
-            print('go_furthest_no_box and up is direction with the tail the farthest from head')
+            #print('go_furthest_no_box and up is direction with the tail the farthest from head')
             self.go_up()
             return
         # If down length is the largest
         if down >= right and down >= left and down >= up:
-            print('go_furthest_no_box and down is direction with the tail the farthest from head')
+            #print('go_furthest_no_box and down is direction with the tail the farthest from head')
             self.go_down()
             return
 
@@ -586,7 +587,7 @@ class Gui():
         # If there is not a tail to the left, then reward that path more.
         if snake_y - i < 0:
             i += 1
-        print('left = {}'.format(i))
+        #print('left = {}'.format(i))
         left = i
         # Check right Length
         i = 1
@@ -599,7 +600,7 @@ class Gui():
         # If there is not a tail to the right, then reward that path more.
         if snake_y + i > self.grid.length - 1:
             i += 1
-        print('right = {}'.format(i))
+        #print('right = {}'.format(i))
         right = i
         # Check up Length
         i = 1
@@ -612,7 +613,7 @@ class Gui():
         # If there is not a tail to the up, then reward that path more.
         if snake_x - i < 0:
             i += 1
-        print('up = {}'.format(i))
+        #print('up = {}'.format(i))
         up = i
         # Check down Length
         i = 1
@@ -625,68 +626,68 @@ class Gui():
         # If there is not a tail to the down, then reward that path more.
         if snake_x + i > self.grid.height - 1:
             i += 1
-        print('down = {}'.format(i))
+        #print('down = {}'.format(i))
         down = i
         # If left length is the largest and doesnt create a box
         if left > right and left > down and left > up and not left_boxed:
-            print('go_furthest_no_box_smart and left is direction with the tail the farthest from head1')
+            #print('go_furthest_no_box_smart and left is direction with the tail the farthest from head1')
             self.go_left()
             return
         # If right length is the largest and doesnt create a box
         if right > left and right > down and right > up and not right_boxed:
-            print('go_furthest_no_box_smart and right is direction with the tail the farthest from head1')
+            #print('go_furthest_no_box_smart and right is direction with the tail the farthest from head1')
             self.go_right()
             return
         # If up length is the largest and doesnt create a box
         if up > right and up > down and up > left and not up_boxed:
-            print('go_furthest_no_box_smart and up is direction with the tail the farthest from head1')
+            #print('go_furthest_no_box_smart and up is direction with the tail the farthest from head1')
             self.go_up()
             return
         # If down length is the largest and doesnt create a box
         if down > right and down > left and down > up and not down_boxed:
-            print('go_furthest_no_box_smart and down is direction with the tail the farthest from head1')
+            #print('go_furthest_no_box_smart and down is direction with the tail the farthest from head1')
             self.go_down()
             return
 
         # If left length is the largest and is objectively and safely closer to food
         if left > right and left > down and left > up and not left_boxed_biased:
-            print('go_furthest_no_box_smart and left is direction with the tail the farthest from head2')
+            #print('go_furthest_no_box_smart and left is direction with the tail the farthest from head2')
             self.go_left()
             return
         # If right length is the largest and is objectively and safely closer to food
         if right > left and right > down and right > up and not right_boxed_biased:
-            print('go_furthest_no_box_smart and right is direction with the tail the farthest from head2')
+            #print('go_furthest_no_box_smart and right is direction with the tail the farthest from head2')
             self.go_right()
             return
         # If up length is the largest and is objectively and safely closer to food
         if up > right and up > down and up > left and not up_boxed_biased:
-            print('go_furthest_no_box_smart and up is direction with the tail the farthest from head2')
+            #print('go_furthest_no_box_smart and up is direction with the tail the farthest from head2')
             self.go_up()
             return
         # If down length is the largest and is objectively and safely closer to food
         if down > right and down > left and down > up and not down_boxed_biased:
-            print('go_furthest_no_box_smart and down is direction with the tail the farthest from head2')
+            #print('go_furthest_no_box_smart and down is direction with the tail the farthest from head2')
             self.go_down()
             return
 
         # If left length is at least the largest and is pretty close to the food
         if left >= right and left >= down and left >= up and (not left_boxed or not left_boxed_biased):
-            print('go_furthest_no_box_smart and left is direction with the tail the farthest from head3')
+            #print('go_furthest_no_box_smart and left is direction with the tail the farthest from head3')
             self.go_left()
             return
         # If right length is at least the largest and is pretty close to the food
         if right >= left and right >= down and right >= up and (not right_boxed or not right_boxed_biased):
-            print('go_furthest_no_box_smart and right is direction with the tail the farthest from head3')
+            #print('go_furthest_no_box_smart and right is direction with the tail the farthest from head3')
             self.go_right()
             return
         # If up length is at least the largest and is pretty close to the food
         if up >= right and up >= down and up >= left and (not up_boxed or not up_boxed_biased):
-            print('go_furthest_no_box_smart and up is direction with the tail the farthest from head3')
+            #print('go_furthest_no_box_smart and up is direction with the tail the farthest from head3')
             self.go_up()
             return
         # If down length is at least the largest and is pretty close to the food
         if down >= right and down >= left and down >= up and (not down_boxed or not down_boxed_biased):
-            print('go_furthest_no_box_smart and down is direction with the tail the farthest from head3')
+            #print('go_furthest_no_box_smart and down is direction with the tail the farthest from head3')
             self.go_down()
             return
 
@@ -719,7 +720,7 @@ class Gui():
                 self.bool_surrounded = True
                 #print('increasing recursive count to {}'.format(self.recursive_count))
                 self.recursive_count += 1
-                print('is surrounded')
+                #print('is surrounded')
                 if self.just_survived_count < 10:
                     self.just_survived_count += 1
                     self.just_survive()
@@ -784,12 +785,15 @@ g = Grid(grid_rows, grid_cols)
 
 gui = Gui(grid_cols, grid_rows, g)
 
+# import time
+# time.sleep(10)
+
 # Main Game Loop. Runs for a total number of frames
 for _ in range(gui.frames):
     gui.score += 1
     gui.update_score_disp()
     gui.window.update()
-    #gui.print_grid()
+    # gui.print_grid()
     # move the snake through the grid.
     gui.move_snake()
 
