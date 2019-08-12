@@ -1,7 +1,7 @@
 # Used to get a random position for the apple and the snake head start.
 import random
 #random.seed(100)
-from queue import Queue
+from my_queue import Queue
 from snake_node import Snake_Node
 
 # The Grid object to create and manipulate the grid being played on.

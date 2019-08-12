@@ -1,5 +1,5 @@
 from grid_for_ai import Grid
-from queue import Queue
+from my_queue import Queue
 import user_input as ui
 import turtle
 import time
