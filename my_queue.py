@@ -1,10 +1,10 @@
-class Queue():
+class Queue:
     # Initialize an empty Queue
     def __init__(self):
         self.items = []
 
     # Insert an item to the queue so it is at the end of the stack
-    def enqueue(self,item):
+    def enqueue(self, item):
         self.items.append(item)
 
     # Take the first element from the beginning of the queue and return it
